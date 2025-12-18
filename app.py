@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import os
+from utils.database import init_db, save_analysis
 
 from utils.text_extractor import extract_text_from_pdf, clean_text
 from model.matcher import calculate_match_score
@@ -7,6 +8,8 @@ from model.skill_gap import analyze_skill_gap
 from model.skills import ROLE_SKILLS
 
 app = Flask(__name__)
+
+init_db()
 
 UPLOAD_FOLDER = "data/uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -33,6 +36,8 @@ def index():
 
         match_score = calculate_match_score(resume_text, job_text)
         present, missing = analyze_skill_gap(resume_text, ROLE_SKILLS[role])
+
+        save_analysis(role, match_score, present, missing, resume_text)
 
         return render_template(
             "result.html",

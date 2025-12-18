@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 import os
-from utils.database import init_db, save_analysis, fetch_analysis_history
+from utils.database import init_db, save_analysis, fetch_analysis_history, generate_resume_hash
 
 from utils.text_extractor import extract_text_from_pdf, clean_text
 from model.matcher import calculate_match_score
@@ -17,34 +17,55 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        role = request.form["role"]
-        file = request.files["resume"]
         user_type = request.form["user_type"]
+        role = request.form["role"]
+        files = request.files.getlist("resume")
 
-        if file.filename == "":
-            return "No file uploaded"
-
-        file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-        file.save(file_path)
-
-        resume_text = extract_text_from_pdf(file_path)
-        resume_text = clean_text(resume_text)
-
+        # Load job description once
         with open(f"data/job_descriptions/{role}.txt", "r") as f:
-            job_text = f.read()
+            job_text = clean_text(f.read())
 
-        job_text = clean_text(job_text)
+        results = []
 
-        match_score = calculate_match_score(resume_text, job_text)
-        present, missing = analyze_skill_gap(resume_text, ROLE_SKILLS[role])
+        for file in files:
+            if file.filename == "":
+                continue
 
-        save_analysis(user_type, role, match_score, present, missing, resume_text)
+            file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+            file.save(file_path)
+
+            resume_text = clean_text(extract_text_from_pdf(file_path))
+
+            match_score = calculate_match_score(resume_text, job_text)
+            present, missing = analyze_skill_gap(resume_text, ROLE_SKILLS[role])
+
+            resume_hash = generate_resume_hash(resume_text)
+            save_analysis(user_type, role, match_score, present, missing, resume_text)
+
+            results.append({
+                "resume_hash": resume_hash[:10],
+                "score": match_score,
+                "present": present,
+                "missing": missing
+            })
+
+        # 🔹 Applicant: only one resume expected
+        if user_type == "applicant":
+            result = results[0]
+            return render_template(
+                "result.html",
+                score=result["score"],
+                present=result["present"],
+                missing=result["missing"],
+                role=role.upper()
+            )
+
+        # 🔹 Recruiter: rank multiple resumes
+        ranked_results = sorted(results, key=lambda x: x["score"], reverse=True)
 
         return render_template(
-            "result.html",
-            score=match_score,
-            present=present,
-            missing=missing,
+            "recruiter_result.html",
+            results=ranked_results,
             role=role.upper()
         )
 

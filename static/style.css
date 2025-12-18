@@ -95,8 +95,12 @@ body {
     margin: 40px;
 }
 
-h1, h2 {
-    color: #2c3e50;
+h1 {
+    color: #f3f9ff;
+}
+
+h2 {
+    color: #182532 ;
 }
 
 button {

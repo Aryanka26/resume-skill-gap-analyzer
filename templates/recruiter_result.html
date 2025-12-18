@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Candidate Ranking – {{ role }}</h2>
+
+{% for candidate in results %}
+    <div style="border:1px solid #ddd; padding:15px; margin-bottom:15px; border-radius:6px;">
+        <h3>Rank {{ loop.index }}</h3>
+        <p><strong>Candidate ID:</strong> {{ candidate.resume_hash }}</p>
+        <p><strong>Match Score:</strong> {{ candidate.score }}%</p>
+
+        <p><strong>Present Skills:</strong>
+            {{ candidate.present | join(", ") }}
+        </p>
+
+        <p><strong>Missing Skills:</strong>
+            {{ candidate.missing | join(", ") }}
+        </p>
+    </div>
+{% endfor %}
+
+<a href="/">← Upload More Resumes</a>
+
+{% endblock %}

@@ -2,24 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>HireLens</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <header class="header">
-        <h1>HireLens</h1>
-        <p>Skill-first resume screening and candidate alignment</p>
-        <nav>
-            <a href="/" style="color:white; margin-right:15px;">Home</a>
-            <a href="/history" style="color:white;">History</a>
-        </nav>
-    </header>
+    <!-- Top Navbar -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <span class="brand">HireLens</span>
+        </div>
+        <div class="nav-right">
+            <a href="/">Analyze</a>
+            <a href="/history">History</a>
+        </div>
+    </nav>
 
-    <main class="container">
+    <!-- Main content -->
+    <main class="page-container">
         {% block content %}{% endblock %}
     </main>
 

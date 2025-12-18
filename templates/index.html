@@ -1,27 +1,31 @@
 {% extends "layout.html" %}
-
 {% block content %}
 
-<form method="POST" enctype="multipart/form-data">
-    <label><strong>Select User Type:</strong></label><br>
-    <select name="user_type" required>
-        <option value="applicant">Applicant</option>
-        <option value="recruiter">Recruiter</option>
-    </select>
-    <br><br>
+<div class="card">
+    <h2>Resume Screening</h2>
+    <p class="subtitle">
+        Evaluate resume alignment using skill-first analysis
+    </p>
 
-    <label><strong>Select Target Role:</strong></label><br>
-    <select name="role" required>
-        <option value="sde_intern">SDE Intern</option>
-        <option value="ml_intern">ML Intern</option>
-    </select>
-    <br><br>
+    <form method="POST" enctype="multipart/form-data">
 
-    <label><strong>Upload Resume (PDF):</strong></label><br>
-    <input type="file" name="resume" accept=".pdf" multiple required>
-    <br><br>
+        <label>Select User Type</label>
+        <select name="user_type" required>
+            <option value="applicant">Applicant</option>
+            <option value="recruiter">Recruiter</option>
+        </select>
 
-    <button type="submit">Analyze Resume</button>
-</form>
+        <label>Select Target Role</label>
+        <select name="role" required>
+            <option value="sde_intern">SDE Intern</option>
+            <option value="ml_intern">ML Intern</option>
+        </select>
+
+        <label>Upload Resume(s)</label>
+        <input type="file" name="resume" accept=".pdf" multiple required>
+
+        <button type="submit">Analyze with HireLens</button>
+    </form>
+</div>
 
 {% endblock %}

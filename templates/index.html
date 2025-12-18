@@ -3,6 +3,13 @@
 {% block content %}
 
 <form method="POST" enctype="multipart/form-data">
+    <label><strong>Select User Type:</strong></label><br>
+    <select name="user_type" required>
+        <option value="applicant">Applicant</option>
+        <option value="recruiter">Recruiter</option>
+    </select>
+    <br><br>
+
     <label><strong>Select Target Role:</strong></label><br>
     <select name="role" required>
         <option value="sde_intern">SDE Intern</option>

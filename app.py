@@ -19,6 +19,7 @@ def index():
     if request.method == "POST":
         role = request.form["role"]
         file = request.files["resume"]
+        user_type = request.form["user_type"]
 
         if file.filename == "":
             return "No file uploaded"
@@ -37,7 +38,7 @@ def index():
         match_score = calculate_match_score(resume_text, job_text)
         present, missing = analyze_skill_gap(resume_text, ROLE_SKILLS[role])
 
-        save_analysis(role, match_score, present, missing, resume_text)
+        save_analysis(user_type, role, match_score, present, missing, resume_text)
 
         return render_template(
             "result.html",

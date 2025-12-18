@@ -25,7 +25,7 @@ def init_db():
     conn.close()
 
 
-def save_analysis(role, score, present, missing, resume_text):
+def save_analysis(user_type, role, score, present, missing, resume_text):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -33,9 +33,10 @@ def save_analysis(role, score, present, missing, resume_text):
 
     cursor.execute("""
         INSERT INTO analysis_history
-        (role, match_score, present_skills, missing_skills, resume_hash, timestamp)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (user_type, role, match_score, present_skills, missing_skills, resume_hash, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
+        user_type,
         role,
         score,
         ",".join(present),
